@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -12,6 +13,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Toast;
 
@@ -82,6 +84,11 @@ public class TimerService extends Service implements SensorEventListener{
     @Override
     public void onDestroy(){
         Toast.makeText(getApplicationContext(), "service stoped", Toast.LENGTH_SHORT).show();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("service_running",false);
+        editor.apply();
+
         mTimer.cancel();
         sensorManager.unregisterListener(this);
         dataStorage.handleFileClosing();
@@ -148,9 +155,9 @@ public class TimerService extends Service implements SensorEventListener{
                 .setContentText("Subject")
                 .setSmallIcon(R.drawable.roadcondition)
                 .setContentIntent(pIntent)
-                .setAutoCancel(true)
-                .addAction(R.drawable.stop, "stop", pStopServiceIntent)
-                .addAction(R.drawable.back, "go to app", pIntent).build();
+                //.setAutoCancel(true)
+                .addAction(R.drawable.icon, "stop", pStopServiceIntent)
+                .addAction(R.drawable.icon, "go to app", pIntent).build();
         notificationManager =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 

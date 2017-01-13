@@ -51,6 +51,16 @@ public class ImageUploadUtils {
         return null;
     }
 
+    public void  openSimpleCamera() {
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        activity.startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+
+    }
+
+
+
 
 
     private File createImageFile() throws IOException {

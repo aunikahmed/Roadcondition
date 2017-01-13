@@ -3,9 +3,11 @@ package com.example.aunik.roadcondition2;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.view.Window;
@@ -13,19 +15,16 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import com.example.aunik.roadcondition2.apiUtils.RESTClient;
-import com.example.aunik.roadcondition2.utils.ImageUploadUtils;
-
-import java.util.Map;
 
 public class MainActivity extends ActionBarActivity {
 
     private TextView currentX, currentY, currentZ;
-    private Button viewConditonButton, contributeButton, uploadImageBtn;
+    private Button viewConditonButton, contributeButton, commentBtn;
     public static  int t =0;
-    ImageUploadUtils imageUploadUtils;
+
     RESTClient restClient;
     Uri imageUri;
-
+    SharedPreferences preferences;
 
     /** Called when the activity is first created. */
     @Override
@@ -36,13 +35,21 @@ public class MainActivity extends ActionBarActivity {
 
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_main);
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         setContentView(R.layout.home);
-        imageUploadUtils = new ImageUploadUtils(this);
+
         restClient = new RESTClient(getApplicationContext());
 
         viewConditonButton = (Button) findViewById(R.id.viewButton);
         contributeButton = (Button)findViewById(R.id.contributeButton);
-        uploadImageBtn = (Button) findViewById(R.id.uploadBtn);
+        commentBtn = (Button) findViewById(R.id.uploadBtn);
+
+        boolean serviceRunning  = preferences.getBoolean("service_running", false);
+        if(!serviceRunning){
+            contributeButton.setText("contribute");
+        }else{
+            contributeButton.setText("stop Contribution");
+        }
 
         viewConditonButton.setOnClickListener(new View.OnClickListener() {
 
@@ -69,24 +76,33 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 //toggle.toggle();
-                if ( t == 0) {
+
+                boolean serviceRunning  = preferences.getBoolean("service_running", false);
+
+                if ( !serviceRunning) {
                     showDialog();
-                } else if (t ==1) {
+                } else if (serviceRunning) {
                     stopService();
                     t = 0;
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putBoolean("service_running",false);
+                    editor.apply();
                     contributeButton.setText("contribute");
 
                 }
             }
+
+
         });
 
 
 
-        uploadImageBtn.setOnClickListener(new View.OnClickListener() {
+        commentBtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                imageUri = imageUploadUtils.openCamera();
+                Intent homeIntent = new Intent(getApplicationContext(), CommentActivity.class);
+                startActivity(homeIntent);
             }
         });
 
@@ -94,20 +110,6 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-
-            if(imageUri != null){
-                //upload image
-               // restClient.uploadImage(imageUri);
-            }
-            //capturedImage.setImageBitmap(imageBitmap);
-        }
-    }
 
     void showDialog(){
 
@@ -120,6 +122,10 @@ public class MainActivity extends ActionBarActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         startService();
                         t = 1;
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putBoolean("service_running",true);
+                        editor.apply();
+
                         contributeButton.setText("stop Contribution");
                     }
                 })

@@ -34,8 +34,8 @@ public class Route {
     }
 
     public static  Route getSampleRoute(){
-        RoadSegment roadSegment1 = new RoadSegment("123", 1, null);
-        RoadSegment roadSegment2 = new RoadSegment("123", 1, null);
+        RoadSegment roadSegment1 = new RoadSegment("123", 1, null, null);
+        RoadSegment roadSegment2 = new RoadSegment("123", 1, null, null);
 
         List<RoadSegment> roadSegments = new ArrayList<RoadSegment>();
         roadSegments.add(roadSegment1);

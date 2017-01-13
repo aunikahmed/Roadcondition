@@ -20,7 +20,8 @@
             android:text="contribute"
             android:id="@+id/contributeButton" android:layout_gravity="center_horizontal"/>
     <Button
-            android:text="Upload Image"
-            android:layout_width="257dp"
-            android:layout_height="wrap_content" android:id="@+id/uploadBtn"/>
+            android:text="Comment / Upload Photo"
+            android:layout_width="270dp"
+            android:layout_height="wrap_content" android:id="@+id/uploadBtn"
+            android:layout_gravity="center_horizontal"/>
 </LinearLayout>

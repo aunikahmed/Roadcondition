@@ -43,7 +43,7 @@ public class RESTClient {
 
     public void sendData(){
 
-        RoadSegment g = new RoadSegment("123",1, null);
+        RoadSegment g = new RoadSegment("123",1, null, null);
         Call<RoadSegment> repos = service.sendData(g);
         repos.enqueue(new Callback<RoadSegment>() {
             @Override
@@ -59,6 +59,26 @@ public class RESTClient {
             }
         });
     }
+
+
+    public void sendSegmentData(RoadSegment roadSegment){
+
+        Call<RoadSegment> repos = service.sendData(roadSegment);
+        repos.enqueue(new Callback<RoadSegment>() {
+            @Override
+            public void onResponse(Call<RoadSegment>call, Response<RoadSegment> response) {
+                RoadSegment roadSegment = response.body();
+                Log.d(TAG, "*******post completed " + roadSegment.getPlaceId()  );
+            }
+
+            @Override
+            public void onFailure(Call<RoadSegment>call, Throwable t) {
+                // Log error here since request failed
+                Log.e(TAG, t.toString());
+            }
+        });
+    }
+
 
     public void getData(){
         RoadSegment roadSegment;

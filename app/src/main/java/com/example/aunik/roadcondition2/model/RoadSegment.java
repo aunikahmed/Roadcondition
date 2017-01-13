@@ -17,12 +17,24 @@ public class RoadSegment {
     @SerializedName("images")
     private List<String> images;
 
-    public RoadSegment(String placeId, int condition, List<String> images) {
+    @SerializedName("comments")
+    private List<String> comments;
+
+    public List<String> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<String> comments) {
+        this.comments = comments;
+    }
+
+    public RoadSegment(String placeId, int condition, List<String> images, List<String> comments) {
+
         this.placeId = placeId;
         this.condition = condition;
         this.images = images;
+        this.comments = comments;
     }
-
 
     public String getPlaceId() {
 
